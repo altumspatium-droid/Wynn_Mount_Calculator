@@ -80,7 +80,7 @@ class FinalMount():
             return {}  # impossible with this material set
 
         A_use = A[np.ix_(active_skills, useful_idx)]
-        c = np.ones(len(useful_idx))  # minimize total item count
+        c = np.ones(len(useful_idx)) + (A_use.sum(axis=0) * 0.0001)
 
         res = milp(
             c=c,
