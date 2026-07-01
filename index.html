@@ -80,6 +80,7 @@ let glpkInstance = null;
 GLPK().then(glpk => {
     glpkInstance = glpk;
 });
+let glpkReady = GLPK().then(glpk => glpk);
 
 // ------------------------------
 // MATERIAL TABLES
@@ -319,7 +320,8 @@ class FinalMount {
 // ------------------------------
 // MAIN CALCULATE FUNCTION
 // ------------------------------
-function calculate() {
+async function calculate() {
+    const glpk = await glpkReady;
     if (!glpkInstance) {
         document.getElementById("output").innerText =
             "Solver is still loading. Please wait a moment and try again.";
