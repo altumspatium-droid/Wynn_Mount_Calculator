@@ -324,7 +324,8 @@ def eaten_to_table(eaten):
 def calculate_feeding(limits, maxes):
     m = FinalMount(limits, maxes)
     m.fully_eat(mats_lists)
-    return eaten_to_table(m.eaten)
+    return len(m.eaten)
+    # return eaten_to_table(m.eaten)
 
 def calculate_num_needed(limits, maxes):
     m = FinalMount(limits, maxes)
