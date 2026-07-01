@@ -248,7 +248,16 @@ class FinalMount():
       self.apply_plan(self.get_current_mats(mats_lists), plan)
 
 
+def eaten_to_string(eaten):
+    """Convert a list of (material_name, tier) to a human-readable string."""
+    if not eaten:
+        return "No food eaten."
+    lines = []
+    for name, tier in eaten:
+        lines.append(f"{name} (tier {tier})")
+    return "\n".join(lines)
+
 def calculate_feeding(limits, maxes):
     m = FinalMount(limits, maxes)
     m.fully_eat(mats_lists)
-    return m.eaten
+    return eaten_to_string(m.eaten)
