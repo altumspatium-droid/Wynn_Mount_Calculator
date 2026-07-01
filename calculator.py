@@ -247,17 +247,47 @@ class FinalMount():
       plan = self.find_feed_plan(mats_lists)
       self.apply_plan(self.get_current_mats(mats_lists), plan)
 
+def eaten_to_table(eaten):
+    """
+    Convert a list of (material_name, tier) to a table for display.
+    
 
-def eaten_to_string(eaten):
-    """Convert a list of (material_name, tier) to a human-readable string."""
-    if not eaten:
-        return "No food eaten."
-    lines = []
+    table example:
+                |   ingot    |   gem     |   plank   |   paper   |   string  |   grains  |   oil     |   meat    |
+    # lvl 1     |
+    # lvl 10    |
+    # lvl 20    |
+    # lvl 30    |
+    # lvl 40    |
+    # lvl 50    |
+    # lvl 60    |
+    # lvl 70    |
+    # lvl 80    |
+    # lvl 90    |
+    # lvl 100   |
+    # lvl 105   |
+    # lvl 110   |
+    # lvl 115   |
+    """
+    table = {}
     for name, tier in eaten:
-        lines.append(f"{name} (tier {tier})")
-    return "\n".join(lines)
+        if tier not in table:
+            table[tier] = {}
+        if name not in table[tier]:
+            table[tier][name] = 0
+        table[tier][name] += 1
+
+    # Convert to a list of rows for display
+    rows = []
+    for tier in sorted(table.keys()):
+        row = [f"# lvl {tier * 10}"]
+        for name in ['ingot', 'gem', 'plank', 'paper', 'string', 'grains', 'oil', 'meat']:
+            row.append(str(table[tier].get(name, 0)))
+        rows.append(row)
+
+    return rows
 
 def calculate_feeding(limits, maxes):
     m = FinalMount(limits, maxes)
     m.fully_eat(mats_lists)
-    return eaten_to_string(m.eaten)
+    return eaten_to_table(m.eaten)
