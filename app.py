@@ -77,7 +77,7 @@ if st.button("Calculate Feeding Advice", type="primary"):
 
             st.subheader("Results")
 
-            st.write(result)
+            st.table(result)
 
         except Exception as e:
             st.error(f"Calculation failed:\n\n{e}")
