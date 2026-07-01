@@ -223,7 +223,7 @@ class FinalMount():
               return self.limits
 
       for name, count in plan.items():
-          if name not in ['grains', 'gem', 'paper']:
+        if name not in ['grains', 'gem', 'paper']:
             vec = current_mats[name]
             for _ in range(count):
                 self.eaten.append((name, current_tier))
@@ -233,7 +233,7 @@ class FinalMount():
                 test_tier = self.get_food_tier()
                 if test_tier > current_tier:
                 return self.limits
-    
+
     def apply_plan(self, materials, plan):
         """Feed the plan to the mount, updating self.limits (clamped to maxs)."""
         tier = self.get_food_tier()
