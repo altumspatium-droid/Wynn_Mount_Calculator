@@ -247,6 +247,36 @@ class FinalMount():
       plan = self.find_feed_plan(mats_lists)
       self.apply_plan(self.get_current_mats(mats_lists), plan)
 
+def tier_to_level(tier):
+  if tier == 0:
+    return 1
+  elif tier == 1:
+    return 10
+  elif tier == 2:
+    return 20
+  elif tier == 3:
+    return 30
+  elif tier == 4:
+    return 40
+  elif tier == 5:
+    return 50
+  elif tier == 6:
+    return 60
+  elif tier == 7:
+    return 70
+  elif tier == 8:
+    return 80
+  elif tier == 9:
+    return 90
+  elif tier == 10:
+    return 100
+  elif tier == 11:
+    return 105
+  elif tier == 12:
+    return 110
+  else:
+    return 115
+
 def eaten_to_table(eaten):
     """
     Convert a list of (material_name, tier) to a table for display.
@@ -278,9 +308,9 @@ def eaten_to_table(eaten):
         table[tier][name] += 1
 
     # Convert to a list of rows for display
-    rows = []
+    rows = ['', 'ingot', 'gem', 'plank', 'paper', 'string', 'grains', 'oil', 'meat']
     for tier in sorted(table.keys()):
-        row = [f"# lvl {tier * 10}"]
+        row = [f"lvl {tier_to_level(tier)}"]
         for name in ['ingot', 'gem', 'plank', 'paper', 'string', 'grains', 'oil', 'meat']:
             row.append(str(table[tier].get(name, 0)))
         rows.append(row)
