@@ -308,7 +308,7 @@ def eaten_to_table(eaten):
         table[tier][name] += 1
 
     # Convert to a list of rows for display
-    rows = ['', 'ingot', 'gem', 'plank', 'paper', 'string', 'grains', 'oil', 'meat']
+    rows = [['', 'ingot', 'gem', 'plank', 'paper', 'string', 'grains', 'oil', 'meat']]
     for tier in sorted(table.keys()):
         row = [f"lvl {tier_to_level(tier)}"]
         for name in ['ingot', 'gem', 'plank', 'paper', 'string', 'grains', 'oil', 'meat']:
