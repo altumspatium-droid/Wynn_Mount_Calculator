@@ -83,6 +83,7 @@ if st.button("Calculate Feeding Advice", type="primary"):
     with st.spinner("Optimizing..."):
 
         try:
+            limits2, maxes2 = limits.copy(), maxes.copy()
             result = calculate_feeding(limits, maxes)
 
             st.success("Optimization complete!")
@@ -90,7 +91,8 @@ if st.button("Calculate Feeding Advice", type="primary"):
             st.divider()
 
             st.subheader("Results")
-            number_needed = calculate_num_needed(limits, maxes)
+
+            number_needed = calculate_num_needed(limits2, maxes2)
             st.write(
                 "Number of items needed to fully level your mount:", number_needed
             )
