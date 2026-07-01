@@ -1,5 +1,5 @@
 import streamlit as st
-from calculator import calculate_feeding
+from calculator import calculate_feeding, calculate_num_needed
 
 st.set_page_config(
     page_title="Mount Feeding Calculator",
@@ -41,15 +41,27 @@ for i, col in enumerate(cols):
 
 st.subheader("Maximum Values")
 
+stat_names = [
+    "Speed",
+    "Acceleration",
+    "Altitude",
+    "Energy",
+    "Handling",
+    "Toughness",
+    "Boost",
+    "Training",
+]
+
 maxes = []
 
 cols = st.columns(8)
 
 for i, col in enumerate(cols):
     with col:
+        st.caption(stat_names[i])  # shows the stat name above the input
         maxes.append(
             st.number_input(
-                label=f"Max {i+1}",
+                label=stat_names[i],
                 value=30,
                 min_value=1,
                 max_value=9999,
