@@ -131,6 +131,8 @@ class FinalMount():
         return 11
       elif max_limit < 115:
         return 12
+      else:
+        return 13
 
 
     def get_current_mats(self, mats_lists):
@@ -168,6 +170,8 @@ class FinalMount():
         return 11
       elif max_limit < 115:
         return 12
+      else:
+        return 13
     
     def is_at_max_food_tier(self):
       if self.get_food_tier() == self.get_max_food_tier():
