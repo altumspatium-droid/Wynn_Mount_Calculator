@@ -228,11 +228,11 @@ class FinalMount():
             for _ in range(count):
                 self.eaten.append((name, current_tier))
                 for j in range(len(self.limits)):
-                self.limits[j] = min(self.maxs[j], self.limits[j] + vec[j])
-                
+                    self.limits[j] = min(self.maxs[j], self.limits[j] + vec[j])
+                    
                 test_tier = self.get_food_tier()
                 if test_tier > current_tier:
-                return self.limits
+                    return self.limits
 
     def apply_plan(self, materials, plan):
         """Feed the plan to the mount, updating self.limits (clamped to maxs)."""
