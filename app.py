@@ -28,8 +28,8 @@ for i, col in enumerate(cols):
             st.number_input(
                 label=f"Limit {i+1}",
                 value=1,
-                min_value=0,
-                max_value=30,
+                min_value=1,
+                max_value=9999,
                 step=1,
                 label_visibility="collapsed",
             )
@@ -51,8 +51,8 @@ for i, col in enumerate(cols):
             st.number_input(
                 label=f"Max {i+1}",
                 value=30,
-                min_value=0,
-                max_value=30,
+                min_value=1,
+                max_value=9999,
                 step=1,
                 label_visibility="collapsed",
             )
