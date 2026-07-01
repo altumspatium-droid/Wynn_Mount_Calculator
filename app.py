@@ -18,12 +18,25 @@ st.divider()
 
 st.subheader("Limits")
 
+stat_names = [
+    "Speed",
+    "Acceleration",
+    "Altitude",
+    "Energy",
+    "Handling",
+    "Toughness",
+    "Boost",
+    "Training",
+]
+
+
 limits = []
 
 cols = st.columns(8)
 
 for i, col in enumerate(cols):
     with col:
+        st.caption(stat_names[i])  # shows the stat name above the input
         limits.append(
             st.number_input(
                 label=f"Limit {i+1}",
@@ -40,17 +53,6 @@ for i, col in enumerate(cols):
 # -----------------------
 
 st.subheader("Maximum Values")
-
-stat_names = [
-    "Speed",
-    "Acceleration",
-    "Altitude",
-    "Energy",
-    "Handling",
-    "Toughness",
-    "Boost",
-    "Training",
-]
 
 maxes = []
 
