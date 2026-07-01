@@ -329,4 +329,4 @@ def calculate_feeding(limits, maxes):
 def calculate_num_needed(limits, maxes):
     m = FinalMount(limits, maxes)
     m.fully_eat(mats_lists)
-    return len(m.eaten)
+    return m.eaten
