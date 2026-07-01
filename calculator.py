@@ -245,7 +245,7 @@ class FinalMount():
           plan = self.find_feed_plan(mats_lists)
           self.apply_plan_until_new_tier(mats_lists, plan)
       plan = self.find_feed_plan(mats_lists)
-      self.apply_plan(m.get_current_mats(mats_lists), plan)
+      self.apply_plan(self.get_current_mats(mats_lists), plan)
 
 
 def calculate_feeding(limits, maxes):
