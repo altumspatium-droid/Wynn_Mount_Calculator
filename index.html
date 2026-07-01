@@ -70,10 +70,20 @@
 
     <div id="output"></div>
 
+    <!-- GLPK.js (MILP solver) -->
+    <script src="https://unpkg.com/glpk.js@0.19.0/dist/glpk.min.js"></script>
+
 <script>
-/* ------------------------------
-   MATERIAL TABLES
---------------------------------*/
+let glpkInstance = null;
+
+// Initialize GLPK
+GLPK().then(glpk => {
+    glpkInstance = glpk;
+});
+
+// ------------------------------
+// MATERIAL TABLES
+// ------------------------------
 function getMatsOfLevel(n) {
     let low, lowmid, mid, highmid, high;
 
@@ -104,9 +114,9 @@ function getMatsOfLevel(n) {
     };
 }
 
-/* ------------------------------
-   FINALMOUNT CLASS
---------------------------------*/
+// ------------------------------
+// FINALMOUNT CLASS
+// ------------------------------
 class FinalMount {
     constructor(limits, maxes) {
         this.limits = limits.slice();
@@ -165,19 +175,99 @@ class FinalMount {
         return matsLists[this.getFoodTier()];
     }
 
-    // Greedy approximation of your MILP solver
+    // MILP solver using GLPK.js
     findFeedPlan(matsLists) {
+        if (!glpkInstance) {
+            throw new Error("Solver not ready yet. Please wait a moment and try again.");
+        }
+
         const mats = this.getCurrentMats(matsLists);
+        const names = Object.keys(mats);
+        const nSkills = this.limits.length;
+
         const needed = this.maxes.map((m, i) => Math.max(0, m - this.limits[i]));
+        if (!needed.some(v => v > 0)) return {};
+
+        // Build A matrix: skills x materials
+        const A = [];
+        for (let j = 0; j < nSkills; j++) {
+            const row = [];
+            for (const name of names) {
+                row.push(mats[name][j]);
+            }
+            A.push(row);
+        }
+
+        const activeSkills = [];
+        for (let j = 0; j < nSkills; j++) {
+            if (needed[j] > 0) activeSkills.push(j);
+        }
+
+        // Filter useful materials
+        const usefulIdx = [];
+        for (let i = 0; i < names.length; i++) {
+            let useful = false;
+            for (const j of activeSkills) {
+                if (A[j][i] > 0) {
+                    useful = true;
+                    break;
+                }
+            }
+            if (useful) usefulIdx.push(i);
+        }
+        if (usefulIdx.length === 0) return {};
+
+        const usefulNames = usefulIdx.map(i => names[i]);
+
+        // Build GLPK problem
+        const vars = usefulNames.map((name, idx) => ({
+            name: `x${idx}`,
+            coef: 1
+        }));
+
+        const subjectTo = [];
+        for (const j of activeSkills) {
+            const rowVars = usefulIdx.map((i, idx) => ({
+                name: `x${idx}`,
+                coef: A[j][i]
+            }));
+            subjectTo.push({
+                name: `skill_${j}`,
+                vars: rowVars,
+                bnds: {
+                    type: glpkInstance.GLP_LO,
+                    ub: 0,
+                    lb: needed[j]
+                }
+            });
+        }
+
+        const generals = usefulNames.map((_, idx) => `x${idx}`);
+
+        const lp = {
+            name: "feedplan",
+            objective: {
+                direction: glpkInstance.GLP_MIN,
+                name: "total_items",
+                vars: vars
+            },
+            subjectTo: subjectTo,
+            generals: generals
+        };
+
+        const result = glpkInstance.solve(lp);
+
+        if (result.result.status !== glpkInstance.GLP_OPT) {
+            throw new Error("Could not find an optimal feeding plan.");
+        }
 
         const plan = {};
-
-        for (const [name, vec] of Object.entries(mats)) {
-            let score = 0;
-            for (let i = 0; i < 8; i++) {
-                score += Math.min(vec[i], needed[i]);
+        for (let idx = 0; idx < usefulNames.length; idx++) {
+            const varName = `x${idx}`;
+            const val = Math.round(result.result.vars[varName]);
+            if (val > 0) {
+                plan[usefulNames[idx]] = val;
             }
-            if (score > 0) plan[name] = Math.ceil(score / 10);
         }
 
         return plan;
@@ -226,10 +316,16 @@ class FinalMount {
     }
 }
 
-/* ------------------------------
-   MAIN CALCULATE FUNCTION
---------------------------------*/
+// ------------------------------
+// MAIN CALCULATE FUNCTION
+// ------------------------------
 function calculate() {
+    if (!glpkInstance) {
+        document.getElementById("output").innerText =
+            "Solver is still loading. Please wait a moment and try again.";
+        return;
+    }
+
     const limits = [];
     const maxes = [];
 
@@ -241,11 +337,16 @@ function calculate() {
     const matsLists = [];
     for (let i = 0; i < 14; i++) matsLists.push(getMatsOfLevel(i));
 
-    const mount = new FinalMount(limits, maxes);
-    mount.fullyEat(matsLists);
+    try {
+        const mount = new FinalMount(limits, maxes);
+        mount.fullyEat(matsLists);
 
-    document.getElementById("output").innerText =
-        mount.eaten.join("\n");
+        document.getElementById("output").innerText =
+            mount.eaten.join("\n");
+    } catch (e) {
+        document.getElementById("output").innerText =
+            "Error while solving:\n" + e.message;
+    }
 }
 </script>
 
