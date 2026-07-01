@@ -1,2 +1,105 @@
-# This is a test
-regarding github pages
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Mount Feeding Calculator</title>
+
+    <!-- PyScript -->
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 { text-align: center; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 6px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Mount Feeding Calculator</h1>
+
+    <h3>Limits</h3>
+    <div class="grid">
+        <input id="limit0" type="number">
+        <input id="limit1" type="number">
+        <input id="limit2" type="number">
+        <input id="limit3" type="number">
+        <input id="limit4" type="number">
+        <input id="limit5" type="number">
+        <input id="limit6" type="number">
+        <input id="limit7" type="number">
+    </div>
+
+    <h3>Maxes</h3>
+    <div class="grid">
+        <input id="max0" type="number">
+        <input id="max1" type="number">
+        <input id="max2" type="number">
+        <input id="max3" type="number">
+        <input id="max4" type="number">
+        <input id="max5" type="number">
+        <input id="max6" type="number">
+        <input id="max7" type="number">
+    </div>
+
+    <button onclick="calculate()">Calculate Feeding Advice</button>
+
+    <div id="output"></div>
+
+    <py-script>
+from js import document
+
+def calculate():
+    limits = [int(document.getElementById(f"limit{i}").value or 0) for i in range(8)]
+    maxes  = [int(document.getElementById(f"max{i}").value or 0) for i in range(8)]
+
+    # ---------------------------------------------------------
+    # REPLACE THIS PART WITH YOUR OWN FEEDING LOGIC
+    # ---------------------------------------------------------
+    advice_lines = []
+    for i in range(8):
+        diff = maxes[i] - limits[i]
+        advice_lines.append(f"Stat {i+1}: Increase by {diff}")
+    # ---------------------------------------------------------
+
+    output = "\n".join(advice_lines)
+    document.getElementById("output").innerText = output
+
+    </py-script>
+
+    <script>
+        // Connect Python function to button
+        function calculate() {
+            pyscript.interpreter.globals.get("calculate")()
+        }
+    </script>
+
+</body>
+</html>
