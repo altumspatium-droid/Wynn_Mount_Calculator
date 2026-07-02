@@ -176,6 +176,8 @@ class FinalMount():
       other_limit = level_to_num(gathering_level)
 
       max_limit = min(max_limit, other_limit)
+      if max_limit == other_limit:
+        raise ValueError(f"max_limit: {max_limit}, other_limit: {other_limit}, gathering_level: {gathering_level}, profession: {profession}")
       return max_limit
     
 
