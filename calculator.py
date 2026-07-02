@@ -168,16 +168,16 @@ class FinalMount():
       elif profession == "Fishing":
         gathering_level = gathering_levels[3]
     
-      max_limit = 0
+      temp_max_limit = 0
       for temp_num, max_num in zip(lims, self.maxs):
-        if temp_num > max_limit:
-          max_limit = min(temp_num, max_num)
+        if temp_num > temp_max_limit:
+          temp_max_limit = min(temp_num, max_num)
       
       other_limit = level_to_num(gathering_level)
 
-      max_limit = min(max_limit, other_limit)
+      max_limit = min(temp_max_limit, other_limit)
       if max_limit == other_limit:
-        raise ValueError(f"max_limit: {max_limit}, other_limit: {other_limit}, gathering_level: {gathering_level}, profession: {profession}, self limite: {self.limits}, {lims}, self maxs: {self.maxs}")
+        raise ValueError(f"temp_max_limit: {temp_max_limit}, max_limit: {max_limit}, other_limit: {other_limit}, gathering_level: {gathering_level}, profession: {profession}, self limite: {self.limits}, {lims}, self maxs: {self.maxs}")
       return max_limit
     
 
