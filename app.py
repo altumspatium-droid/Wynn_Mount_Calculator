@@ -1,5 +1,5 @@
 import streamlit as st
-from calculator import calculate_feeding2, calculate_num_needed
+from calculator import calculate_feeding, calculate_num_needed
 
 st.set_page_config(
     page_title="Mount Feeding Calculator",
@@ -78,7 +78,7 @@ st.write("")
 # Max mats to use
 # -----------------------
 
-st.subheader("Highest lvl materials you can use from professions")
+st.subheader("Highest level gathering professions to use materials from.")
 
 gathering_levels = []
 
@@ -112,7 +112,7 @@ if st.button("Calculate Feeding Advice", type="primary"):
         try:
             limits2, maxes2 = limits.copy(), maxes.copy()
 
-            result = calculate_feeding2(limits, maxes, gathering_levels)
+            result = calculate_feeding(limits, maxes, gathering_levels)
 
             st.success("Optimization complete!")
 
@@ -128,6 +128,4 @@ if st.button("Calculate Feeding Advice", type="primary"):
             st.table(result)
 
         except Exception as e:
-            import traceback
             st.error(f"Calculation failed:\n\n{e}")
-            st.code(traceback.format_exc())
