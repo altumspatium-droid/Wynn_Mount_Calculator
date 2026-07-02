@@ -12,14 +12,16 @@ def level_to_tiers(n, gathering_level):
   elif (gathering_level < 60 or n < 6):
     low, lowmid, mid, highmid, high = 4, 7, 8, 14, 18
   elif (gathering_level < 70 or n < 7):
-    low, lowmid, mid, highmid, high = 4, 8, 10, 17, 22
+    low, lowmid, mid, highmid, high = 4, 8, 9, 15, 20
   elif (gathering_level < 80 or n < 8):
-    low, lowmid, mid, highmid, high = 4, 9, 10, 18, 24
+    low, lowmid, mid, highmid, high = 4, 8, 10, 17, 22
   elif (gathering_level < 90 or n < 9):
+    low, lowmid, mid, highmid, high = 4, 9, 10, 18, 24
+  elif (gathering_level < 100 or n < 10):
     low, lowmid, mid, highmid, high = 5, 9, 11, 20, 26
-  elif (gathering_level < 100 or n < 11):
+  elif (gathering_level < 105 or n < 11):
     low, lowmid, mid, highmid, high = 5, 10, 12, 21, 28
-  elif (gathering_level < 105 or n < 12):
+  elif (gathering_level < 110 or n < 12):
     low, lowmid, mid, highmid, high = 5, 10, 12, 22, 29
   elif (gathering_level < 110 or n < 13):
     low, lowmid, mid, highmid, high = 5, 11, 13, 23, 30
