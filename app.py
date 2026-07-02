@@ -128,4 +128,6 @@ if st.button("Calculate Feeding Advice", type="primary"):
             st.table(result)
 
         except Exception as e:
+            import traceback
             st.error(f"Calculation failed:\n\n{e}")
+            st.code(traceback.format_exc())
