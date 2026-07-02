@@ -172,8 +172,9 @@ class FinalMount():
           max_limit = min(temp_num, max_num)
       
       other_limit = level_to_num(gathering_level)
-      max_limit = min(max_limit, other_limit)
       raise ValueError(f"other_limit: {other_limit}, max_limit: {max_limit}")
+
+      max_limit = min(max_limit, other_limit)
       return max_limit
     
 
