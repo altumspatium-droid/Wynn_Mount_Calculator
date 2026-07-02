@@ -1,48 +1,57 @@
-def get_mats_of_level(n):
-  if n == 0:
+def level_to_tiers(n, gathering_level):
+  if (gathering_level < 10 or n < 1):
     low, lowmid, mid, highmid, high = 2, 4, 4, 6, 8
-  elif n == 1:
+  elif (gathering_level < 20 or n < 2):
     low, lowmid, mid, highmid, high = 2, 5, 5, 8, 10
-  elif n == 2:
+  elif (gathering_level < 30 or n < 3):
     low, lowmid, mid, highmid, high = 3, 5, 6, 9, 12
-  elif n == 3:
+  elif (gathering_level < 40 or n < 4):
     low, lowmid, mid, highmid, high = 3, 6, 6, 11, 14
-  elif n == 4:
+  elif (gathering_level < 50 or n < 5):
     low, lowmid, mid, highmid, high = 3, 6, 7, 12, 16
-  elif n == 5:
+  elif (gathering_level < 60 or n < 6):
     low, lowmid, mid, highmid, high = 4, 7, 8, 14, 18
-  elif n == 6:
-    low, lowmid, mid, highmid, high = 4, 8, 9, 15, 20
-  elif n == 7:
+  elif (gathering_level < 70 or n < 7):
     low, lowmid, mid, highmid, high = 4, 8, 10, 17, 22
-  elif n == 8:
+  elif (gathering_level < 80 or n < 8):
     low, lowmid, mid, highmid, high = 4, 9, 10, 18, 24
-  elif n == 9:
+  elif (gathering_level < 90 or n < 9):
     low, lowmid, mid, highmid, high = 5, 9, 11, 20, 26
-  elif n == 10:
+  elif (gathering_level < 100 or n < 11):
     low, lowmid, mid, highmid, high = 5, 10, 12, 21, 28
-  elif n == 11:
+  elif (gathering_level < 105 or n < 12):
     low, lowmid, mid, highmid, high = 5, 10, 12, 22, 29
-  elif n == 12:
+  elif (gathering_level < 110 or n < 13):
     low, lowmid, mid, highmid, high = 5, 11, 13, 23, 30
-  elif n == 13:
+  else:
     low, lowmid, mid, highmid, high = 5, 11, 13, 23, 31
   
-  return {
-    'ingot': [0, 0, 0, lowmid, 0, high, 0, 0],
-    'gem':   [mid, 0, 0, low, 0, 0, 0, highmid],
-    'plank': [low, highmid, 0, 0, 0, mid, 0, 0],
-    'paper': [0, 0, high, 0, 0, 0, lowmid, 0],
-    'string': [0, low, 0, 0, mid, 0, highmid, 0],
-    'grains': [high, 0, lowmid, 0, 0, 0, 0, 0],
-    'oil':   [0, 0, low, 0, highmid, 0, 0, mid],
-    'meat':  [0, lowmid, 0, high, 0, 0, 0, 0]
-}
+  return low, lowmid, mid, highmid, high
 
 
+def get_mats_of_levels(n, gathering_levels):
+
+  out = {}
+
+  low, lowmid, mid, highmid, high = level_to_tiers(n, gathering_levels[0])
+  out['ingot'] = [0, 0, 0, lowmid, 0, high, 0, 0]
+  out['gem']   = [mid, 0, 0, low, 0, 0, 0, highmid]
+  
+  low, lowmid, mid, highmid, high = level_to_tiers(n, gathering_levels[1])
+  out['plank'] = [low, highmid, 0, 0, 0, mid, 0, 0]
+  out['paper']   = [0, 0, high, 0, 0, 0, lowmid, 0]
+
+  low, lowmid, mid, highmid, high = level_to_tiers(n, gathering_levels[2])
+  out['string'] = [0, low, 0, 0, mid, 0, highmid, 0]
+  out['grains']   = [high, 0, lowmid, 0, 0, 0, 0, 0]
+  
+  low, lowmid, mid, highmid, high = level_to_tiers(n, gathering_levels[3])
+  out['oil'] = [0, 0, low, 0, highmid, 0, 0, mid]
+  out['meat']   = [0, lowmid, 0, high, 0, 0, 0, 0]
+      
+  return out
 
 
-mats_lists = [get_mats_of_level(i) for i in range(14)]
 
 import numpy as np
 from scipy.optimize import milp, LinearConstraint, Bounds
@@ -322,12 +331,14 @@ def eaten_to_table(eaten):
 
     return rows
 
-def calculate_feeding(limits, maxes):
+def calculate_feeding(limits, maxes, gathering_levels):
+    mats_lists = [get_mats_of_levels(i, gathering_levels) for i in range(14)]
     m = FinalMount(limits, maxes)
     m.fully_eat(mats_lists)
     return eaten_to_table(m.eaten)
 
-def calculate_num_needed(limits, maxes):
+def calculate_num_needed(limits, maxes, gathering_levels):
+    mats_lists = [get_mats_of_levels(i, gathering_levels) for i in range(14)]
     m = FinalMount(limits, maxes)
     m.fully_eat(mats_lists)
     return len(m.eaten)
