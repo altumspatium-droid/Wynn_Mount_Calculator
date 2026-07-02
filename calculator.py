@@ -173,12 +173,8 @@ class FinalMount():
         if temp_num > temp_max_limit:
           temp_max_limit = min(temp_num, max_num)
       
-      other_limit = level_to_num(gathering_level)
-
-      max_limit = min(temp_max_limit, other_limit)
-      if max_limit == other_limit:
-        raise ValueError(f"temp_max_limit: {temp_max_limit}, max_limit: {max_limit}, other_limit: {other_limit}, gathering_level: {gathering_level}, profession: {profession}, self limite: {self.limits}, {lims}, self maxs: {self.maxs}")
-      return max_limit
+      max_num = level_to_num(min(temp_max_limit, gathering_level))
+      return max_num
     
 
     def get_food_tier(self, special_limits = None):
