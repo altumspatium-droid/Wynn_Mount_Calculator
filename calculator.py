@@ -332,8 +332,8 @@ class FinalMount():
           vec = materials[name]
           for _ in range(count):
             self.eaten.append((name, named_tier))
-                for j in range(len(self.limits)):
-                    self.limits[j] = min(self.maxs[j], self.limits[j] + vec[j])
+            for j in range(len(self.limits)):
+              self.limits[j] = min(self.maxs[j], self.limits[j] + vec[j])
         return self.limits
     
     def fully_eat(self, mats_lists, gathering_levels):
