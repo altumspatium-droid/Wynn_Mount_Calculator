@@ -177,7 +177,7 @@ class FinalMount():
 
       max_limit = min(max_limit, other_limit)
       if max_limit == other_limit:
-        raise ValueError(f"max_limit: {max_limit}, other_limit: {other_limit}, gathering_level: {gathering_level}, profession: {profession}, self limite: {self.limits}, self maxs: {self.maxs}")
+        raise ValueError(f"max_limit: {max_limit}, other_limit: {other_limit}, gathering_level: {gathering_level}, profession: {profession}, self limite: {self.limits}, {lims}, self maxs: {self.maxs}")
       return max_limit
     
 
