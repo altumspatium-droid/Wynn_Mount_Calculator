@@ -166,6 +166,7 @@ class FinalMount():
       elif profession == "Fishing":
         gathering_level = gathering_levels[3]
     
+      max_limit = 0
       for temp_num, max_num in zip(lims, self.maxs):
         if temp_num > max_limit:
           max_limit = min(temp_num, max_num)
