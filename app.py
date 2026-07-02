@@ -75,6 +75,33 @@ for i, col in enumerate(cols):
 st.write("")
 
 # -----------------------
+# Max mats to use
+# -----------------------
+
+st.subheader("Highest lvl materials you can use from professions")
+
+maxes = []
+
+cols = st.columns(4)
+gathering_names = ["woodcutting", "fishing", "mining", "farming"]
+
+for i, col in enumerate(cols):
+    with col:
+        st.caption(gathering_names[i])  # shows the stat name above the input
+        maxes.append(
+            st.number_input(
+                label=gathering_names[i],
+                value=115,
+                min_value=1,
+                max_value=115,
+                step=1,
+                label_visibility="collapsed",
+            )
+        )
+
+st.write("")
+
+# -----------------------
 # Calculate
 # -----------------------
 
