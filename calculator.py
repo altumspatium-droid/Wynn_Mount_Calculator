@@ -1,3 +1,31 @@
+def level_to_num(gathering_level):
+  if gathering_level < 10:
+    return 0
+  elif gathering_level < 20:
+    return 1
+  elif gathering_level < 30:
+    return 2
+  elif gathering_level < 40:
+    return 3
+  elif gathering_level < 50:
+    return 4
+  elif gathering_level < 60:
+    return 5
+  elif gathering_level < 70:
+    return 6
+  elif gathering_level < 80:
+    return 7
+  elif gathering_level < 90:
+    return 8
+  elif gathering_level < 100:
+    return 9
+  elif gathering_level < 105:
+    return 10
+  elif gathering_level < 110:
+    return 11
+  elif gathering_level < 115:
+    return 12
+
 def level_to_tiers(n, gathering_level):
   if (gathering_level < 10 or n < 1):
     low, lowmid, mid, highmid, high = 2, 4, 4, 6, 8
@@ -106,6 +134,47 @@ class FinalMount():
         return {names[useful_idx[i]]: int(counts[i])
                 for i in range(len(useful_idx)) if counts[i] > 0}
 
+
+    def name_to_profession(self, name):
+      if name in ["ingot", "gem"]:
+            return "Mining"
+      elif name in ["plank", "paper"]:
+          return "Woodcutting"
+      elif name in ["string", "grains"]:
+          return "Farming"
+      elif name in ["oil", "meat"]:
+          return "Fishing"
+      else:
+          raise ValueError(f"Unknown material name: {name}")
+
+    def get_specific_food_tier(self, name, gathering_levels, special_limits = None):
+      profession = self.name_to_profession(name)
+      if special_limits == None:
+        lims = self.limits
+      else:
+        lims = special_limits
+      
+      if profession == "Mining":
+        gathering_level = gathering_levels[0]
+      
+      elif profession == "Woodcutting":
+        gathering_level = gathering_levels[1]
+
+      elif profession == "Farming":
+        gathering_level = gathering_levels[2]
+
+      elif profession == "Fishing":
+        gathering_level = gathering_levels[3]
+    
+      for temp_num, max_num in zip(lims, self.maxs):
+        if temp_num > max_limit:
+          max_limit = min(temp_num, max_num)
+      
+      other_limit = level_to_num(gathering_level)
+      max_limit = min(max_limit, other_limit)
+      return max_limit
+    
+
     def get_food_tier(self, special_limits = None):
       if special_limits == None:
         lims = self.limits
@@ -189,7 +258,7 @@ class FinalMount():
         return True
       return False
     
-    def apply_plan_until_new_tier(self, mats_lists, plan):
+    def apply_plan_until_new_tier(self, mats_lists, plan, gathering_levels):
 
       current_mats = self.get_current_mats(mats_lists)
       current_tier = self.get_food_tier()
@@ -199,9 +268,12 @@ class FinalMount():
 
       for name, count in plan.items():
         if name == 'grains':
+          
+          named_tier = self.get_specific_food_tier(name, gathering_levels)
+
           vec = current_mats[name]
           for _ in range(count):
-            self.eaten.append((name, current_tier))
+            self.eaten.append((name, named_tier))
             for j in range(len(self.limits)):
               self.limits[j] = min(self.maxs[j], self.limits[j] + vec[j])
             
@@ -211,9 +283,11 @@ class FinalMount():
 
       for name, count in plan.items():
         if name == 'gem':
+          named_tier = self.get_specific_food_tier(name, gathering_levels)
+
           vec = current_mats[name]
           for _ in range(count):
-            self.eaten.append((name, current_tier))
+            self.eaten.append((name, named_tier))
             for j in range(len(self.limits)):
               self.limits[j] = min(self.maxs[j], self.limits[j] + vec[j])
             
@@ -223,9 +297,11 @@ class FinalMount():
 
       for name, count in plan.items():
         if name == 'paper':
+          named_tier = self.get_specific_food_tier(name, gathering_levels)
+
           vec = current_mats[name]
           for _ in range(count):
-            self.eaten.append((name, current_tier))
+            self.eaten.append((name, named_tier))
             for j in range(len(self.limits)):
               self.limits[j] = min(self.maxs[j], self.limits[j] + vec[j])
             
@@ -235,31 +311,35 @@ class FinalMount():
 
       for name, count in plan.items():
         if name not in ['grains', 'gem', 'paper']:
-            vec = current_mats[name]
-            for _ in range(count):
-                self.eaten.append((name, current_tier))
-                for j in range(len(self.limits)):
-                    self.limits[j] = min(self.maxs[j], self.limits[j] + vec[j])
-                    
-                test_tier = self.get_food_tier()
-                if test_tier > current_tier:
-                    return self.limits
+          named_tier = self.get_specific_food_tier(name, gathering_levels)
 
-    def apply_plan(self, materials, plan):
+          vec = current_mats[name]
+          for _ in range(count):
+            self.eaten.append((name, named_tier))
+            for j in range(len(self.limits)):
+              self.limits[j] = min(self.maxs[j], self.limits[j] + vec[j])
+                    
+              test_tier = self.get_food_tier()
+              if test_tier > current_tier:
+                  return self.limits
+
+    def apply_plan(self, materials, plan, gathering_levels):
         """Feed the plan to the mount, updating self.limits (clamped to maxs)."""
         tier = self.get_food_tier()
         for name, count in plan.items():
-            vec = materials[name]
-            for _ in range(count):
-                self.eaten.append((name, tier))
+          named_tier = self.get_specific_food_tier(name, gathering_levels)
+
+          vec = materials[name]
+          for _ in range(count):
+            self.eaten.append((name, named_tier))
                 for j in range(len(self.limits)):
                     self.limits[j] = min(self.maxs[j], self.limits[j] + vec[j])
         return self.limits
     
-    def fully_eat(self, mats_lists):
+    def fully_eat(self, mats_lists, gathering_levels):
       while not self.is_at_max_food_tier():
           plan = self.find_feed_plan(mats_lists)
-          self.apply_plan_until_new_tier(mats_lists, plan)
+          self.apply_plan_until_new_tier(mats_lists, plan, gathering_levels)
       plan = self.find_feed_plan(mats_lists)
       self.apply_plan(self.get_current_mats(mats_lists), plan)
 
@@ -333,14 +413,14 @@ def eaten_to_table(eaten):
 
     return rows
 
-def calculate_feeding2(limits, maxes, gathering_levels):
+def calculate_feeding(limits, maxes, gathering_levels):
     mats_lists = [get_mats_of_levels(i, gathering_levels) for i in range(14)]
     m = FinalMount(limits, maxes)
-    m.fully_eat(mats_lists)
+    m.fully_eat(mats_lists, gathering_levels)
     return eaten_to_table(m.eaten)
 
 def calculate_num_needed(limits, maxes, gathering_levels):
     mats_lists = [get_mats_of_levels(i, gathering_levels) for i in range(14)]
     m = FinalMount(limits, maxes)
-    m.fully_eat(mats_lists)
+    m.fully_eat(mats_lists, gathering_levels)
     return len(m.eaten)
