@@ -80,15 +80,15 @@ st.write("")
 
 st.subheader("Highest lvl materials you can use from professions")
 
-maxes = []
+gathering_levels = []
 
 cols = st.columns(4)
-gathering_names = ["woodcutting", "fishing", "mining", "farming"]
+gathering_names = ["Mining", "Woodcutting", "Farming", "Fishing"]
 
 for i, col in enumerate(cols):
     with col:
         st.caption(gathering_names[i])  # shows the stat name above the input
-        maxes.append(
+        gathering_levels.append(
             st.number_input(
                 label=gathering_names[i],
                 value=115,
@@ -111,7 +111,8 @@ if st.button("Calculate Feeding Advice", type="primary"):
 
         try:
             limits2, maxes2 = limits.copy(), maxes.copy()
-            result = calculate_feeding(limits, maxes)
+
+            result = calculate_feeding(limits, maxes, gathering_levels)
 
             st.success("Optimization complete!")
 
@@ -119,7 +120,7 @@ if st.button("Calculate Feeding Advice", type="primary"):
 
             st.subheader("Results")
 
-            number_needed = calculate_num_needed(limits2, maxes2)
+            number_needed = calculate_num_needed(limits2, maxes2, gathering_levels)
             st.write(
                 "Number of items needed to fully level your mount:", number_needed
             )
