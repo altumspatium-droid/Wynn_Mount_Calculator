@@ -177,7 +177,7 @@ class FinalMount():
 
       max_limit = min(max_limit, other_limit)
       if max_limit == other_limit:
-        raise ValueError(f"max_limit: {max_limit}, other_limit: {other_limit}, gathering_level: {gathering_level}, profession: {profession}")
+        raise ValueError(f"max_limit: {max_limit}, other_limit: {other_limit}, gathering_level: {gathering_level}, profession: {profession}, self limite: {self.limits}, self maxs: {self.maxs}")
       return max_limit
     
 
@@ -334,9 +334,6 @@ class FinalMount():
         tier = self.get_food_tier()
         for name, count in plan.items():
           named_tier = self.get_specific_food_tier(name, gathering_levels)
-
-          if named_tier == 13:
-            raise ValueError(f"Cannot feed {name} at tier 13, gathering_levels: {gathering_levels}, limits: {self.limits}, maxs: {self.maxs}")
 
           vec = materials[name]
           for _ in range(count):
