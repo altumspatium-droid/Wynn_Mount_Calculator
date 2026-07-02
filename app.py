@@ -1,5 +1,5 @@
 import streamlit as st
-from calculator import calculate_feeding, calculate_num_needed
+from calculator import calculate_feeding2, calculate_num_needed
 
 st.set_page_config(
     page_title="Mount Feeding Calculator",
