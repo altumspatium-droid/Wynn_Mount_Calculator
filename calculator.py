@@ -25,6 +25,8 @@ def level_to_num(gathering_level):
     return 11
   elif gathering_level < 115:
     return 12
+  else:
+    return 13
 
 def level_to_tiers(n, gathering_level):
   if (gathering_level < 10 or n < 1):
@@ -172,7 +174,6 @@ class FinalMount():
           max_limit = min(temp_num, max_num)
       
       other_limit = level_to_num(gathering_level)
-      raise ValueError(f"other_limit: {other_limit}, max_limit: {max_limit}")
 
       max_limit = min(max_limit, other_limit)
       return max_limit
