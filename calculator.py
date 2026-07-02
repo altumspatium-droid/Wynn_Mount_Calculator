@@ -345,7 +345,7 @@ class FinalMount():
           plan = self.find_feed_plan(mats_lists)
           self.apply_plan_until_new_tier(mats_lists, plan, gathering_levels)
       plan = self.find_feed_plan(mats_lists)
-      self.apply_plan(self.get_current_mats(mats_lists), plan)
+      self.apply_plan(self.get_current_mats(mats_lists), plan, gathering_levels)
 
 def tier_to_level(tier):
   if tier == 0:
