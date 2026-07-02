@@ -112,7 +112,7 @@ if st.button("Calculate Feeding Advice", type="primary"):
         try:
             limits2, maxes2 = limits.copy(), maxes.copy()
 
-            result = calculate_feeding(limits, maxes, gathering_levels)
+            result = calculate_feeding2(limits, maxes, gathering_levels)
 
             st.success("Optimization complete!")
 
