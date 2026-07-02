@@ -135,6 +135,52 @@ class FinalMount():
         counts = np.round(res.x).astype(int)
         return {names[useful_idx[i]]: int(counts[i])
                 for i in range(len(useful_idx)) if counts[i] > 0}
+    
+
+    def get_mats_from_stat(self, stat):
+      if stat == 0:
+        return ["grains", "gem", "plank"]
+      elif stat == 1:
+        return ["plank", "meat", "string"]
+      elif stat == 2:
+        return ["paper", "grains", "oil"]
+      elif stat == 3:
+        return ["meat", "ingot", "gem"]
+      elif stat == 4:
+        return ["oil", "string", None]
+      elif stat == 5:
+        return ["ingot", "plank", None]
+      elif stat == 6:
+        return ["string", "paper", None]
+      elif stat == 7:
+        return ["gem", "oil", None]
+
+    def get_best_stats_to_level_fast(self):
+      '''
+      returns the indexes of the stats with the highest max for the purpose of getting to the next tier as fast as possible. 
+      If there are multiple stats with the same max, it will prioritize the stat that can be leveled the fastest.
+      If there are multiple equally good, it will return the first one.
+      '''
+      nums = [level_to_num(m) for m in self.maxs]
+
+      highest_indices = [i for i, x in enumerate(nums) if x == max(nums)]
+
+      # fast stats to level
+      if 0 in highest_indices:
+        return 0
+      elif 2 in highest_indices:
+        return 2
+      elif 3 in highest_indices:
+        return 3
+      elif 5 in highest_indices:
+        return 5
+      
+      # slow stats to level
+      # for the slow stats, let's prioritise training.
+      if 7 in highest_indices:
+        return 7
+      
+      return highest_indices[0]
 
 
     def name_to_profession(self, name):
@@ -268,8 +314,11 @@ class FinalMount():
       # If there are grains, start with that
       # if not, start with gem
 
+      best_stat_to_level = self.get_best_stats_to_level_fast()
+      best_materials_for_stat_to_level = self.get_mats_from_stat(best_stat_to_level)
+
       for name, count in plan.items():
-        if name == 'grains':
+        if name == best_materials_for_stat_to_level[0]:
           
           named_tier = self.get_specific_food_tier(name, gathering_levels)
 
@@ -284,7 +333,7 @@ class FinalMount():
               return self.limits
 
       for name, count in plan.items():
-        if name == 'gem':
+        if name == best_materials_for_stat_to_level[1]:
           named_tier = self.get_specific_food_tier(name, gathering_levels)
 
           vec = current_mats[name]
@@ -298,7 +347,7 @@ class FinalMount():
               return self.limits
 
       for name, count in plan.items():
-        if name == 'paper':
+        if name == best_materials_for_stat_to_level[2]:
           named_tier = self.get_specific_food_tier(name, gathering_levels)
 
           vec = current_mats[name]
@@ -312,7 +361,7 @@ class FinalMount():
               return self.limits
 
       for name, count in plan.items():
-        if name not in ['grains', 'gem', 'paper']:
+        if name not in best_materials_for_stat_to_level:
           named_tier = self.get_specific_food_tier(name, gathering_levels)
 
           vec = current_mats[name]
