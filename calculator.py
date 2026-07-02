@@ -335,6 +335,9 @@ class FinalMount():
         for name, count in plan.items():
           named_tier = self.get_specific_food_tier(name, gathering_levels)
 
+          if named_tier == 13:
+            raise ValueError(f"Cannot feed {name} at tier 13, gathering_levels: {gathering_levels}, limits: {self.limits}, maxs: {self.maxs}")
+
           vec = materials[name]
           for _ in range(count):
             self.eaten.append((name, named_tier))
