@@ -333,7 +333,7 @@ def eaten_to_table(eaten):
 
     return rows
 
-def calculate_feeding(limits, maxes, gathering_levels):
+def calculate_feeding2(limits, maxes, gathering_levels):
     mats_lists = [get_mats_of_levels(i, gathering_levels) for i in range(14)]
     m = FinalMount(limits, maxes)
     m.fully_eat(mats_lists)
